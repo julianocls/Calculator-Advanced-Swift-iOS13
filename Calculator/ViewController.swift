@@ -12,26 +12,40 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var displayLabel: UILabel!
     
-    var isFinishedTypingNumber: Bool = true
+    private var isFinishedTypingNumber: Bool = true
     
     @IBAction func calcButtonPressed(_ sender: UIButton) {
-        if let safeSymbol = sender.currentTitle {
-            if safeSymbol == "+/-" {
-                displayLabel.text = displayLabel.text?.first == "-" ? displayLabel.text?.replacingOccurrences(of: "-", with: "") : "-\(displayLabel.text ?? "0")"
+
+        guard let number = Double(displayLabel.text!) else { fatalError("Cannot convert display label to a double") }
+        
+        if let calcMethod = sender.currentTitle {
+            
+            if calcMethod == "+/-" {
+                displayLabel.text = String(number * -1) //displayLabel.text?.first == "-" ? displayLabel.text?.replacingOccurrences(of: "-", with: "") : "-\(displayLabel.text ?? "0")"
+                
+            } else if calcMethod == "%" {
+                displayLabel.text = number > 0 ? String(number / 100) : "0"
+                
             } else {
                 isFinishedTypingNumber = true
-                if safeSymbol == "AC" {
+                if calcMethod == "AC" {
                     displayLabel.text = "0"
                 }
                 
             }
+            
         }
+        
     }
     
     @IBAction func numButtonPressed(_ sender: UIButton) {
         if let safeNum = sender.currentTitle {
-            if isFinishedTypingNumber && safeNum != "." {
-                displayLabel.text = safeNum
+            if isFinishedTypingNumber {
+                if safeNum != "." {
+                    displayLabel.text = safeNum
+                } else {
+                    displayLabel.text?.append(safeNum)
+                }
                 isFinishedTypingNumber = false
             } else {
                 if !(safeNum == "." && havePoint()) {
