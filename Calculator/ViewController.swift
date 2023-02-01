@@ -13,23 +13,31 @@ class ViewController: UIViewController {
     @IBOutlet weak var displayLabel: UILabel!
     
     private var isFinishedTypingNumber: Bool = true
+    private var displayValue: Double {
+        get {
+            guard let number = Double(displayLabel.text!) else { fatalError("Cannot convert display label to a double") }
+            return number
+        }
+        set {
+            displayLabel.text = String(newValue)
+        }
+    }
     
     @IBAction func calcButtonPressed(_ sender: UIButton) {
-
-        guard let number = Double(displayLabel.text!) else { fatalError("Cannot convert display label to a double") }
-        
+      
         if let calcMethod = sender.currentTitle {
             
             if calcMethod == "+/-" {
-                displayLabel.text = String(number * -1) //displayLabel.text?.first == "-" ? displayLabel.text?.replacingOccurrences(of: "-", with: "") : "-\(displayLabel.text ?? "0")"
+                //displayLabel.text = displayLabel.text?.first == "-" ? displayLabel.text?.replacingOccurrences(of: "-", with: "") : "-\(displayLabel.text ?? "0")"
+                displayValue *= -1
                 
             } else if calcMethod == "%" {
-                displayLabel.text = number > 0 ? String(number / 100) : "0"
+                displayValue *= 0.01
                 
             } else {
                 isFinishedTypingNumber = true
                 if calcMethod == "AC" {
-                    displayLabel.text = "0"
+                    displayValue = 0
                 }
                 
             }
