@@ -23,26 +23,21 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func calcButtonPressed(_ sender: UIButton) {
-      
+    fileprivate func extractedFunc(_ sender: UIButton) {
         if let calcMethod = sender.currentTitle {
             
-            if calcMethod == "+/-" {
-                //displayLabel.text = displayLabel.text?.first == "-" ? displayLabel.text?.replacingOccurrences(of: "-", with: "") : "-\(displayLabel.text ?? "0")"
-                displayValue *= -1
-                
-            } else if calcMethod == "%" {
-                displayValue *= 0.01
-                
-            } else {
-                isFinishedTypingNumber = true
-                if calcMethod == "AC" {
-                    displayValue = 0
-                }
-                
+            let calculator = CalculatorLogic(number: displayValue)
+            guard let result = calculator.calculate(symbol: calcMethod) else {
+                fatalError("The result of the calculate is nil")
             }
+            displayValue = result
             
         }
+    }
+    
+    @IBAction func calcButtonPressed(_ sender: UIButton) {
+      
+        extractedFunc(sender)
         
     }
     
