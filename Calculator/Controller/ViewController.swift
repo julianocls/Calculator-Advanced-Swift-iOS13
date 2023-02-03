@@ -23,10 +23,12 @@ class ViewController: UIViewController {
         }
     }
     
+    private var calculator = CalculatorLogic()
+    
     fileprivate func extractedFunc(_ sender: UIButton) {
         if let calcMethod = sender.currentTitle {
             
-            let calculator = CalculatorLogic(number: displayValue)
+            calculator.setNumber(displayValue)
             guard let result = calculator.calculate(symbol: calcMethod) else {
                 fatalError("The result of the calculate is nil")
             }
