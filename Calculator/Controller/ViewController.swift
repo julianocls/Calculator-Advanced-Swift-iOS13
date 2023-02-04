@@ -13,54 +13,60 @@ class ViewController: UIViewController {
     @IBOutlet weak var displayLabel: UILabel!
     
     private var isFinishedTypingNumber: Bool = true
+    
     private var displayValue: Double {
         get {
-            guard let number = Double(displayLabel.text!) else { fatalError("Cannot convert display label to a double") }
+            guard let number = Double(displayLabel.text!) else {
+                fatalError("Cannot convert display label text to a Double.")
+            }
             return number
         }
         set {
-            displayLabel.text = String(newValue)
+            displayLabel.text = String(String(newValue).prefix(14))
         }
     }
     
     private var calculator = CalculatorLogic()
-    
-    fileprivate func extractedFunc(_ sender: UIButton) {
-        if let calcMethod = sender.currentTitle {
-            
-            calculator.setNumber(displayValue)
-            guard let result = calculator.calculate(symbol: calcMethod) else {
-                fatalError("The result of the calculate is nil")
-            }
-            displayValue = result
-            
-        }
-    }
-    
+
     @IBAction func calcButtonPressed(_ sender: UIButton) {
-      
-        extractedFunc(sender)
+        isFinishedTypingNumber = true
         
+        calculator.setNumber(displayValue)
+        
+        if let calcMethod = sender.currentTitle {
+ 
+            if let result = calculator.calculate(symbol: calcMethod) {
+                displayValue = result
+            }
+        }
     }
     
     @IBAction func numButtonPressed(_ sender: UIButton) {
-        if let safeNum = sender.currentTitle {
+        
+        if let numValue = sender.currentTitle {
+            
             if isFinishedTypingNumber {
-                if safeNum != "." {
-                    displayLabel.text = safeNum
+                if numValue != "." {
+                    displayLabel.text = numValue
                 } else {
-                    displayLabel.text?.append(safeNum)
+                    displayLabel.text?.append(numValue)
                 }
                 isFinishedTypingNumber = false
             } else {
-                if !(safeNum == "." && havePoint()) {
-                    displayLabel.text?.append(safeNum)
+                
+                if numValue == "." {
+                    
+                    //let isInt = floor(displayValue) == displayValue
+                    if havePoint() {
+                        return
+                    }
                 }
+                displayLabel.text = displayLabel.text! + numValue
             }
         }
     }
     
-    fileprivate func havePoint() -> Bool {
+    private func havePoint() -> Bool {
         return displayLabel.text?.firstIndex(of: ".") != nil
     }
 }
